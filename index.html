@@ -1,40 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DemonLogs</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <!-- Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
     body {
-      font-family: 'Space Grotesk', sans-serif;
-      background: radial-gradient(#111827, #000000);
-      color: #f1f5f9;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #d6bcfa, #cbb4f2, #b794f4, #d6bcfa, #cbb4f2);
+      background-size: 800% 800%;
+      animation: lightPurpleFlow 25s ease infinite;
+      color: #2e1065;
+      position: relative;
+      overflow-x: hidden;
+    }
+    @keyframes lightPurpleFlow {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    h1, h2, p, li {
+      color: #2e1065;
+    }
+    h2 {
+      color: #5b21b6;
+    }
+    /* Sidebar scroll & styling */
+    aside {
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #a78bfa #ffffff10;
+      transition: background-color 0.3s ease;
+    }
+    aside:hover {
+      background-color: rgba(255 255 255 / 0.1);
+    }
+    aside::-webkit-scrollbar {
+      width: 6px;
+    }
+    aside::-webkit-scrollbar-thumb {
+      background-color: #a78bfa;
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+      transition: background-color 0.3s ease;
+    }
+    aside::-webkit-scrollbar-thumb:hover {
+      background-color: #7c3aed;
+    }
+    aside::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    aside nav a {
+      color: #6d28d9;
+      transition: color 0.3s ease, transform 0.2s ease;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      padding: 0.3rem 0;
+    }
+    aside nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #7c3aed;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+    aside nav a:hover {
+      color: #7c3aed;
+      transform: translateX(6px);
+    }
+    aside nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Cards hover animation */
+    .card {
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border-radius: 0.75rem;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 24px rgb(124 58 237 / 0.3);
+      z-index: 10;
+    }
+
+    /* Loading animation overlay */
+    #loadingOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(46, 16, 101, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #loadingOverlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .spinner {
+      border: 6px solid #7c3aed;
+      border-top: 6px solid transparent;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 12px #7c3aed;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Section headers */
+    section h2 {
+      border-bottom: 2px solid #7c3aed;
+      padding-bottom: 0.25rem;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
 
-  <div class="text-center animate-fade-in">
-    <h1 class="text-4xl md:text-5xl font-bold mb-4">👁️ DemonLogs</h1>
-    <p class="text-lg text-gray-400 mb-8">Just me, Demon. Logging thoughts, edits, chaos... why? Just because.</p>
+<body class="min-h-screen md:pl-64 flex flex-col items-center justify-start p-6 space-y-10">
+
+  <!-- Sidebar -->
+  <aside style="width: 250px;" class="fixed top-0 left-0 h-full bg-white bg-opacity-10 backdrop-blur-md border-r border-white border-opacity-10 p-6 hidden md:flex flex-col space-y-6 z-20">
+    <h2 class="text-xl font-bold">👁️ DemonLogs</h2>
+    <nav class="flex flex-col space-y-4 text-lg" id="sidebarNav">
+      <a href="#blogs">📚 Blogs</a>
+      <a href="#changelogs">🔄 Changelogs</a>
+      <a href="#about">👤 About</a>
+    </nav>
+  </aside>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" aria-hidden="true">
+    <div class="spinner" role="status" aria-label="Loading"></div>
   </div>
 
-  <div id="logBox" class="glass w-full max-w-2xl p-6 rounded-xl shadow-xl space-y-4">
-    <h2 class="text-2xl font-semibold text-indigo-300">Latest Log</h2>
-    <div class="text-gray-300">
-      <p>🕛 <strong>June 28, 2025</strong></p>
-      <p>👋 Hello, I’m Demon. This is the start of DemonLogs. No plan. Just vibes.</p>
-      <p>🔧 Added cool font, dark theme, and this box you're reading now.</p>
+  <!-- Main Header -->
+  <header class="text-center w-full max-w-3xl">
+    <h1 class="text-4xl md:text-5xl font-bold mb-4 select-none">👁️ DemonLogs</h1>
+    <p class="text-lg text-purple-900 mb-8 select-none">Just me, Demon. Logging thoughts, edits, chaos... why? Just because.</p>
+  </header>
+
+  <!-- Blogs Section -->
+  <section id="blogs" class="glass w-full max-w-3xl p-6 rounded-xl shadow-xl space-y-6">
+    <h2>📚 Blogs</h2>
+    <div id="blogsContainer" class="space-y-4">
+      <!-- Blogs loaded here -->
     </div>
-  </div>
+  </section>
 
-  <script src="script.js"></script>
+  <!-- Changelogs Section -->
+  <section id="changelogs" class="glass w-full max-w-3xl p-6 rounded-xl shadow-xl space-y-6">
+    <h2>🔄 Changelogs</h2>
+    <div id="changelogsContainer" class="space-y-4">
+      <!-- Changelogs loaded here -->
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="glass w-full max-w-3xl p-6 rounded-xl shadow-xl space-y-4">
+    <h2>👤 About</h2>
+    <p>DemonLogs is a digital space by Demon. No fixed goal. Just personal logs, thoughts, edits, and creative experiments. Minimal. Raw. Real.</p>
+  </section>
+
+  <script>
+    // Sample data (in real use, fetch from JSON or API)
+    const blogsData = [
+      {
+        id: 1,
+        title: "Understanding JavaScript Closures",
+        date: "2025-06-20",
+        content: "Closures are functions that have access to variables from another function’s scope..."
+      },
+      {
+        id: 2,
+        title: "My Journey Learning Tailwind CSS",
+        date: "2025-06-25",
+        content: "Tailwind CSS has completely changed how I approach styling my projects..."
+      }
+    ];
+
+    const changelogsData = [
+      {
+        id: 1,
+        title: "Initial Setup",
+        date: "2025-06-15",
+        content: "Setup DemonLogs with purple gradient background, sidebar, and glass effect."
+      },
+      {
+        id: 2,
+        title: "Smooth Sidebar & Animations",
+        date: "2025-06-28",
+        content: "Added smooth scrolling sidebar and hover/click animations."
+      }
+    ];
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    // Function to create blog or changelog cards
+    function createCard(item, type) {
+      const card = document.createElement('article');
+      card.className = 'card bg-white bg-opacity-30 p-4 shadow-md';
+
+      const title = document.createElement('h3');
+      title.className = 'text-xl font-semibold mb-1';
+      title.textContent = item.title;
+
+      const date = document.createElement('time');
+      date.className = 'text-sm text-purple-700 mb-2 block';
+      date.textContent = new Date(item.date).toLocaleDateString();
+
+      const snippet = document.createElement('p');
+      snippet.className = 'text-purple-900';
+      snippet.textContent = item.content.length > 120 ? item.content.slice(0, 120) + '...' : item.content;
+
+      card.appendChild(title);
+      card.appendChild(date);
+      card.appendChild(snippet);
+
+      // On click: show loading animation then open detail view (for now just alert)
+      card.addEventListener('click', () => {
+        loadingOverlay.classList.add('active');
+        setTimeout(() => {
+          loadingOverlay.classList.remove('active');
+          // For now, just open detail in same tab as alert
+          alert(`${type.toUpperCase()} DETAILS\n\nTitle: ${item.title}\nDate: ${item.date}\n\n${item.content}`);
+        }, 900);
+      });
+
+      return card;
+    }
+
+    // Render blogs
+    const blogsContainer = document.getElementById('blogsContainer');
+    blogsData.forEach(blog => {
+      blogsContainer.appendChild(createCard(blog, 'blog'));
+    });
+
+    // Render changelogs
+    const changelogsContainer = document.getElementById('changelogsContainer');
+    changelogsData.forEach(log => {
+      changelogsContainer.appendChild(createCard(log, 'changelog'));
+    });
+  </script>
 </body>
 </html>
