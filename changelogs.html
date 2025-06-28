@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DemonLogs - Changelogs</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #d6bcfa, #cbb4f2, #b794f4, #d6bcfa, #cbb4f2);
+      background-size: 800% 800%;
+      animation: lightPurpleFlow 25s ease infinite;
+      color: #2e1065;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    @keyframes lightPurpleFlow {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-width: 700px;
+      margin: 2rem auto;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+    }
+  </style>
+</head>
+<body>
 
+  <header class="text-center mb-8">
+    <h1 class="text-4xl font-bold mb-2 select-none">🔄 DemonLogs Changelogs</h1>
+    <a href="index.html" class="text-purple-700 underline hover:text-purple-900">← Back to Home</a>
+  </header>
+
+  <main id="changelogList">
+    <!-- Changelogs injected here -->
+  </main>
+
+  <script>
+    const changelogsData = [
+      {
+        version: "v0.2",
+        date: "2025-06-28",
+        changes: {
+          added: ["Smooth scrolling sidebar", "Hover/click animations"],
+          removed: [],
+          optimized: ["Loading performance"]
+        }
+      },
+      {
+        version: "v0.1",
+        date: "2025-06-15",
+        changes: {
+          added: ["Purple gradient background", "Sidebar", "Glass effect"],
+          removed: [],
+          optimized: []
+        }
+      }
+    ];
+
+    const changelogList = document.getElementById('changelogList');
+
+    // Sort by date descending (newest first)
+    changelogsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    changelogsData.forEach(log => {
+      const section = document.createElement('section');
+      section.className = 'glass mb-6';
+
+      const version = document.createElement('h2');
+      version.textContent = `Changelog ${log.version}`;
+      version.className = 'text-2xl font-semibold text-purple-700 mb-1';
+
+      const date = document.createElement('time');
+      date.textContent = new Date(log.date).toLocaleDateString();
+      date.className = 'text-sm text-purple-500 mb-4 block';
+
+      section.appendChild(version);
+      section.appendChild(date);
+
+      // Create list of changes grouped by category
+      for (const [category, items] of Object.entries(log.changes)) {
+        if (items.length > 0) {
+          const categoryTitle = document.createElement('h3');
+          categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+          categoryTitle.className = 'text-purple-600 font-semibold mb-1';
+          section.appendChild(categoryTitle);
+
+          const ul = document.createElement('ul');
+          ul.className = 'list-disc list-inside mb-4 text-purple-900';
+
+          items.forEach(change => {
+            const li = document.createElement('li');
+            li.textContent = change;
+            ul.appendChild(li);
+          });
+
+          section.appendChild(ul);
+        }
+      }
+
+      changelogList.appendChild(section);
+    });
+  </script>
+</body>
+</html>
