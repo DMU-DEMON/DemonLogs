@@ -3,111 +3,248 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DemonLogs - Changelogs</title>
+  <title>Changelogs</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(270deg, #d6bcfa, #cbb4f2, #b794f4, #d6bcfa, #cbb4f2);
-      background-size: 800% 800%;
-      animation: lightPurpleFlow 25s ease infinite;
-      color: #2e1065;
-      min-height: 100vh;
-      padding: 2rem;
+      font-family: 'Figtree', sans-serif;
+      background: radial-gradient(circle at top left, #dbeafe, #f3e8ff, #fce7f3);
+      background-attachment: fixed;
+      color: #1f2937;
+      margin: 0;
+      padding: 0;
     }
-    @keyframes lightPurpleFlow {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: #ffffffee;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    .home-button {
+      background: #7e22ce;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .home-button:hover {
+      background: #9333ea;
+      transform: scale(1.05);
+    }
+
+    .changelog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 6rem 2rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
     .glass {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid #e5e7eb;
       border-radius: 1rem;
-      padding: 1.5rem;
-      max-width: 700px;
-      margin: 2rem auto;
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+      padding: 1.75rem;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+
+    .glass:hover {
+      transform: scale(1.03);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .expanded-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .expanded-content {
+      background: #ffffff;
+      border-radius: 1.25rem;
+      padding: 2rem;
+      width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      animation: popIn 0.3s ease;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .close-button:hover {
+      background: #dc2626;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
-
-  <header class="text-center mb-8">
-    <h1 class="text-4xl font-bold mb-2 select-none">🔄 DemonLogs Changelogs</h1>
-    <a href="index.html" class="text-purple-700 underline hover:text-purple-900">← Back to Home</a>
+  <header class="fixed-header">
+    <h1 class="text-2xl sm:text-3xl font-bold text-purple-800 select-none">📝 Changelogs</h1>
+    <a href="index.html" class="home-button">← Home</a>
   </header>
 
-  <main id="changelogList">
-    <!-- Changelogs injected here -->
-  </main>
+  <main id="changelogList" class="changelog-grid"></main>
 
   <script>
     const changelogsData = [
       {
-        version: "v0.2",
-        date: "2025-06-28",
-        changes: {
-          added: ["Smooth scrolling sidebar", "Hover/click animations"],
-          removed: [],
-          optimized: ["Loading performance"]
-        }
-      },
-      {
         version: "v0.1",
         date: "2025-06-15",
         changes: {
-          added: ["Purple gradient background", "Sidebar", "Glass effect"],
+          added: ["Base UI", "Dark gradient background", "Glass effect", "Added Interactable Changelogs",],
           removed: [],
-          optimized: []
+          optimized: ["Bug Fixes", "optimizations"]
         }
       }
     ];
 
     const changelogList = document.getElementById('changelogList');
 
-    // Sort by date descending (newest first)
-    changelogsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+    function renderChangelogs() {
+      changelogList.innerHTML = '';
+      changelogsData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    changelogsData.forEach(log => {
-      const section = document.createElement('section');
-      section.className = 'glass mb-6';
+      changelogsData.forEach(log => {
+        const section = document.createElement('section');
+        section.className = 'glass';
 
-      const version = document.createElement('h2');
-      version.textContent = `Changelog ${log.version}`;
-      version.className = 'text-2xl font-semibold text-purple-700 mb-1';
+        const version = document.createElement('h2');
+        version.textContent = `Changelog ${log.version}`;
+        version.className = 'text-xl font-semibold text-purple-700 mb-2';
 
-      const date = document.createElement('time');
-      date.textContent = new Date(log.date).toLocaleDateString();
-      date.className = 'text-sm text-purple-500 mb-4 block';
+        const date = document.createElement('time');
+        date.textContent = new Date(log.date).toLocaleDateString();
+        date.className = 'text-sm text-gray-500 mb-3 block';
 
-      section.appendChild(version);
-      section.appendChild(date);
+        section.appendChild(version);
+        section.appendChild(date);
 
-      // Create list of changes grouped by category
-      for (const [category, items] of Object.entries(log.changes)) {
-        if (items.length > 0) {
-          const categoryTitle = document.createElement('h3');
-          categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-          categoryTitle.className = 'text-purple-600 font-semibold mb-1';
-          section.appendChild(categoryTitle);
+        for (const [category, items] of Object.entries(log.changes)) {
+          if (items.length > 0) {
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            categoryTitle.className = 'text-blue-700 font-medium mb-1';
+            section.appendChild(categoryTitle);
 
-          const ul = document.createElement('ul');
-          ul.className = 'list-disc list-inside mb-4 text-purple-900';
+            const ul = document.createElement('ul');
+            ul.className = 'list-disc list-inside text-gray-700';
 
-          items.forEach(change => {
-            const li = document.createElement('li');
-            li.textContent = change;
-            ul.appendChild(li);
+            items.slice(0, 3).forEach(change => {
+              const li = document.createElement('li');
+              li.textContent = change;
+              ul.appendChild(li);
+            });
+
+            if (items.length > 3) {
+              const li = document.createElement('li');
+              li.textContent = '...and more';
+              li.className = 'italic text-gray-400';
+              ul.appendChild(li);
+            }
+
+            section.appendChild(ul);
+          }
+        }
+
+        section.addEventListener('click', () => {
+          const overlay = document.createElement('div');
+          overlay.className = 'expanded-modal';
+
+          const modal = document.createElement('div');
+          modal.className = 'expanded-content';
+
+          const closeBtn = document.createElement('button');
+          closeBtn.textContent = '✕';
+          closeBtn.className = 'close-button';
+          closeBtn.onclick = () => document.body.removeChild(overlay);
+          modal.appendChild(closeBtn);
+
+          const title = document.createElement('h2');
+          title.textContent = `Changelog ${log.version}`;
+          title.className = 'text-2xl font-bold text-purple-800 mb-2';
+          modal.appendChild(title);
+
+          const date = document.createElement('p');
+          date.textContent = new Date(log.date).toLocaleDateString();
+          date.className = 'text-sm text-gray-500 mb-3';
+          modal.appendChild(date);
+
+          for (const [category, items] of Object.entries(log.changes)) {
+            const categoryTitle = document.createElement('h3');
+            categoryTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            categoryTitle.className = 'text-blue-600 font-medium mt-2 mb-1';
+            modal.appendChild(categoryTitle);
+
+            const ul = document.createElement('ul');
+            ul.className = 'list-disc list-inside text-gray-800 mb-4';
+
+            items.forEach(change => {
+              const li = document.createElement('li');
+              li.textContent = change;
+              ul.appendChild(li);
+            });
+
+            modal.appendChild(ul);
+          }
+
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) document.body.removeChild(overlay);
           });
 
-          section.appendChild(ul);
-        }
-      }
+          overlay.appendChild(modal);
+          document.body.appendChild(overlay);
+        });
 
-      changelogList.appendChild(section);
-    });
+        changelogList.appendChild(section);
+      });
+    }
+
+    renderChangelogs();
   </script>
 </body>
 </html>
